@@ -1,0 +1,9 @@
+##after cloning for the first time run this command in the terminal
+.venv/Scripts/activate
+##and then run this
+python.exe -m pip install --upgrade pip
+##and then
+pip install -r requirements.txt
+##and if there is already a sql file run this
+python manage.py makemigrations
+python manage.py migrate
