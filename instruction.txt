@@ -7,3 +7,7 @@ pip install -r requirements.txt
 ##and if there is already a sql file run this
 python manage.py makemigrations
 python manage.py migrate
+
+
+##username-admin
+##password-1
