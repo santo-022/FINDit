@@ -1,0 +1,52 @@
+# ==========================================
+# 1. PyCharm / IntelliJ Configuration
+# ==========================================
+.idea/
+*.iml
+*.iws
+out/
+
+# ==========================================
+# 2. Python Environment & Artifacts
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Virtual Environments (Keep your heavy dependency folders out of Git)
+#.venv/
+#venv/
+env/
+ENV/
+
+# ==========================================
+# 3. Django Specific Files
+# ==========================================
+*.log
+local_settings.py
+#db.sqlite3
+#db.sqlite3-journal
+
+# Media (User uploads - should never be committed)
+#media/
+
+# Staticfiles (Compiled production assets)
+#staticfiles/
+
+# ==========================================
+# 4. Secrets, OS, and Environment Variables
+# ==========================================
+.env
+.env.*
+.DS_Store
+Thumbs.db
