@@ -29,6 +29,23 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.get_full_name() or self.username}"
 
+    @property
+    def is_student(self):
+        return hasattr(self, 'student')
+
+    @property
+    def is_staff_member(self):
+        return hasattr(self, 'staff')
+
+    @property
+    def profile(self):
+        """Returns the Student or Staff object for this user."""
+        if self.is_student:
+            return self.student
+        if self.is_staff_member:
+            return self.staff
+        return self
+
 
 class Student(User):
     class Department(models.TextChoices):
@@ -53,7 +70,7 @@ class Staff(User):
     """Inherits everything from User. Add staff-only fields here later
     (e.g. designation, office_room)."""
     def __str__(self):
-        return f"{self.username})"
+        return f"{self.username}"
 
     class Meta:
         verbose_name_plural = 'Staff'
