@@ -20,7 +20,12 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
+
+from django.urls import path
+from . import views
+
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('student/register/', views.student_register, name='student_register'),
+    path('staff/register/', views.staff_register, name='staff_register'),
 ]
 

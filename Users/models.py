@@ -55,6 +55,7 @@ class Student(User):
         ENG = 'ENG', 'English'
         LAW = 'LAW', 'Law'
         PHA = 'PHA', 'Pharmacy'
+        CIVIL = 'CIV', 'Civil'
         # add/change to match your campus
 
     department = models.CharField(max_length=3, choices=Department.choices)

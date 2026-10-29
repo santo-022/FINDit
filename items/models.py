@@ -20,7 +20,7 @@ class Item(models.Model):
     picture = models.ImageField(upload_to='item_pics/', blank=True, null=True)
     color = models.CharField(max_length=15)
     brand = models.CharField(max_length=20)
-    # location
+    location = models.CharField(max_length=80)
     incident_d_t = models.DateTimeField()
     # status
     created_at = models.DateTimeField(auto_now_add=True)
