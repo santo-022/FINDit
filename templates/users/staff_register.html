@@ -1,10 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Staff Registration | FINDit{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-wrapper {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .registration-card {
+        background: #fff;
+        border: 1px solid #ececf5;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(30, 15, 130, 0.07);
+    }
+
+    .registration-header {
+        background: linear-gradient(120deg, #1900b8, #3924d8);
+        color: white;
+        padding: 30px;
+    }
+
+    .registration-header h1 {
+        font-size: 27px;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
+
+    .registration-header p {
+        font-size: 14px;
+        color: #e5e2ff;
+        margin-bottom: 0;
+    }
+
+    .form-body {
+        padding: 32px;
+    }
+
+    .section-title {
+        color: #1900b8;
+        font-size: 17px;
+        font-weight: 700;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eeeeF5;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #38394a;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        min-height: 45px;
+        border-radius: 9px;
+        border-color: #dedfeb;
+        font-size: 14px;
+    }
+
+    .form-control:focus {
+        border-color: #1900b8;
+        box-shadow: 0 0 0 3px rgba(25, 0, 184, 0.09);
+    }
+
+    .upload-box {
+        background: #f8f7ff;
+        border: 1px dashed #b8b0f4;
+        padding: 17px;
+        border-radius: 10px;
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #777b8b;
+        margin-top: 6px;
+    }
+
+    .btn-register {
+        background: #1900b8;
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        padding: 13px 22px;
+        font-weight: 600;
+    }
+
+    .btn-register:hover {
+        background: #ff751f;
+        color: #fff;
+    }
+
+    .errorlist {
+        color: #dc3545;
+        font-size: 12px;
+        padding-left: 18px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-wrapper">
+
+    <div class="mb-4">
+        <h2 class="page-title">Join FINDit as Staff</h2>
+        <p class="page-subtitle">
+            Create your staff account to access the campus lost and found system.
+        </p>
+    </div>
+
+    <div class="registration-card">
+
+        <div class="registration-header">
+            <h1>Staff Registration</h1>
+            <p>Fill in your details to create your FINDit account.</p>
+        </div>
+
+        <div class="form-body">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <h3 class="section-title">Personal Information</h3>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Username</label>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Email Address</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number</label>
+                        {{ form.phone_number }}
+                        {{ form.phone_number.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Facebook Profile URL (Optional)</label>
+                        {{ form.facebook_id }}
+                        {{ form.facebook_id.errors }}
+                    </div>
+
+                </div>
+
+                <h3 class="section-title">Profile & Verification</h3>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Profile Picture (Optional)</label>
+                        <div class="upload-box">
+                            {{ form.profile_picture }}
+                        </div>
+                        {{ form.profile_picture.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Staff ID Card</label>
+                        <div class="upload-box">
+                            {{ form.id_card }}
+                        </div>
+                        <p class="help-text">
+                            Upload your ID card for admin verification.
+                        </p>
+                        {{ form.id_card.errors }}
+                    </div>
+
+                </div>
+
+                <h3 class="section-title">Account Security</h3>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+
+                </div>
+
+                <div class="alert alert-light border small">
+                    <strong>Admin approval required:</strong>
+                    Your account will be activated after the administrator
+                    verifies your information and staff ID card.
+                </div>
+
+                <button type="submit" class="btn btn-register w-100">
+                    Create Staff Account
+                </button>
+
+                <p class="text-center mt-3 mb-0 small text-secondary">
+                    Already registered?
+                    <a href="{% url 'login' %}"
+                       style="color:#1900b8; font-weight:600;">
+                        Log in
+                    </a>
+                </p>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
