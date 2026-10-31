@@ -15,10 +15,13 @@
     </p>
 
     <form method="post" enctype="multipart/form-data">
+
         {% csrf_token %}
 
         {% for field in form %}
+
             <div class="mb-3">
+
                 <label class="form-label">
                     {{ field.label }}
                 </label>
@@ -30,7 +33,9 @@
                         {{ field.errors }}
                     </div>
                 {% endif %}
+
             </div>
+
         {% endfor %}
 
         <button type="submit" class="btn btn-findit w-100">
@@ -40,5 +45,108 @@
     </form>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const floorSelect = document.getElementById('id_floor');
+    const locationSelect = document.getElementById('id_location_detail');
+
+    const allOptions = {
+        '2': [
+            ['Room 201', 'Room 201'],
+            ['Room 202', 'Room 202'],
+            ['Room 203', 'Room 203'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '3': [
+            ['Room 301', 'Room 301'],
+            ['Room 302', 'Room 302'],
+            ['Room 303', 'Room 303'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '4': [
+            ['Room 401', 'Room 401'],
+            ['Room 402', 'Room 402'],
+            ['Room 403', 'Room 403'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '5': [
+            ['Room 501', 'Room 501'],
+            ['Room 502', 'Room 502'],
+            ['Room 503', 'Room 503'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '6': [
+            ['Room 601', 'Room 601'],
+            ['Room 602', 'Room 602'],
+            ['Room 603', 'Room 603'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '7': [
+            ['Room 701', 'Room 701'],
+            ['Room 702', 'Room 702'],
+            ['Room 703', 'Room 703'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ],
+        '8': [
+            ['Room 801', 'Room 801'],
+            ['Room 802', 'Room 802'],
+            ['Room 803', 'Room 803'],
+            ['Lab 01', 'Lab 01'],
+            ['Lab 02', 'Lab 02'],
+            ['Lab 03', 'Lab 03'],
+            ['Lab 04', 'Lab 04']
+        ]
+    };
+
+    function updateLocations() {
+
+        const floor = floorSelect.value;
+
+        locationSelect.innerHTML =
+            '<option value="">Select Room / Lab</option>';
+
+        if (allOptions[floor]) {
+
+            allOptions[floor].forEach(function (item) {
+
+                const option = document.createElement('option');
+
+                option.value = item[0];
+                option.textContent = item[1];
+
+                locationSelect.appendChild(option);
+
+            });
+
+        }
+
+    }
+
+    floorSelect.addEventListener('change', updateLocations);
+
+    updateLocations();
+
+});
+</script>
 
 {% endblock %}
