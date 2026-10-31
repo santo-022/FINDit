@@ -20,11 +20,13 @@ from django.contrib import admin
 from django.urls import path, include
 from users import views as user_views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', user_views.home, name='home'),
     path('', include('users.urls')),
     path('items/', include('items.urls')),
+    path('recovery/', include('recovery.urls')),
 ]
 # nothing
 if settings.DEBUG:
