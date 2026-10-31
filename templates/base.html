@@ -67,6 +67,29 @@
             font-size: 13px;
         }
 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-nav {
+            background: var(--findit-primary);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-nav:hover {
+            background: var(--findit-orange);
+            color: #fff;
+        }
+
         main {
             flex: 1;
         }
@@ -165,10 +188,16 @@
                 Reuniting people with their belongings
             </div>
 
-            {% if not user.is_authenticated and request.path != '/users/student/register/' %}
-                <a href="{% url 'student_register' %}"
-                   class="btn btn-primary">REGISTER</a>
-            {% endif %}
+            <div class="nav-actions">
+                {% if not user.is_authenticated and request.path != '/student/register/' %}
+                <a href="{% url 'student_register'%}"  class="btn btn-nav">REGISTER</a>
+                {% endif %}
+                {% if not user.is_authenticated and request.path != '/login/' %}
+                    <a href="{% url 'login'%}"  class="btn btn-nav">LOGIN</a>
+                {% endif %}
+            </div>
+
+
         </div>
     </nav>
 
