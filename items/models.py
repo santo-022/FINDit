@@ -22,7 +22,7 @@ class Item(models.Model):
     brand = models.CharField(max_length=20)
     location = models.CharField(max_length=80)
     incident_d_t = models.DateTimeField()
-    # status
+    #status
     created_at = models.DateTimeField(auto_now_add=True)
     itemtype = models.CharField(max_length=5, choices=TYPE_CHOICES, default='LOST')
 
