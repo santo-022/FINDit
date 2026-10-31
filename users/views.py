@@ -1,6 +1,6 @@
-
-from django.shortcuts import render
-from .forms import StudentRegisterForm, StaffRegisterForm
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from .forms import StudentRegisterForm, StaffRegisterForm, LoginForm
 
 
 def student_register(request):
@@ -33,3 +33,17 @@ def staff_register(request):
         form = StaffRegisterForm()
 
     return render(request, 'users/staff_register.html', {'form': form})
+
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect('home')
+    else:
+        form = LoginForm()
+
+    return render(request, 'users/login.html', {'form': form})
