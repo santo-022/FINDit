@@ -17,13 +17,13 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path,include
-from . import views
+from django.urls import path, include
+from users import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', user_views.home, name='home'),
     path('', include('users.urls')),
-    path('',views.home,name='home')
 ]
 
 if settings.DEBUG:

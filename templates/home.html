@@ -1,120 +1,122 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Student Registration | FINDit{% endblock %}
+{% block title %}Home | FINDit{% endblock %}
 
 {% block extra_css %}
 <style>
-    .registration-wrapper {
-        max-width: 850px;
-        margin: 0 auto;
-    }
-
-    .registration-card {
-        background: #fff;
-        border: 1px solid #ececf5;
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 12px 35px rgba(30, 15, 130, 0.07);
-    }
-
-    .registration-header {
-        background: linear-gradient(120deg, #1900b8, #3924d8);
-        color: white;
-        padding: 30px;
-    }
-
-    .registration-header h1 {
-        font-size: 27px;
+    .home-heading {
+        color: #1900b8;
+        font-size: 30px;
         font-weight: 750;
         margin-bottom: 8px;
     }
 
-    .registration-header p {
-        font-size: 14px;
-        color: #e5e2ff;
-        margin-bottom: 0;
-    }
-
-    .form-body {
-        padding: 32px;
-    }
-
-    .section-title {
-        color: #1900b8;
-        font-size: 17px;
-        font-weight: 700;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eeeeF5;
-    }
-
-    .form-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #38394a;
-        margin-bottom: 8px;
-    }
-
-    .form-control, .form-select {
-        min-height: 45px;
-        border-radius: 9px;
-        border-color: #dedfeb;
-        font-size: 14px;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #1900b8;
-        box-shadow: 0 0 0 3px rgba(25, 0, 184, 0.09);
-    }
-
-    .help-text {
-        font-size: 12px;
+    .home-description {
         color: #777b8b;
-        margin-top: 6px;
+        font-size: 15px;
+        margin-bottom: 30px;
     }
 
-    .upload-box {
-        background: #f8f7ff;
-        border: 1px dashed #b8b0f4;
-        padding: 17px;
-        border-radius: 10px;
+    .item-card {
+        background: #fff;
+        border: 1px solid #ececf5;
+        border-radius: 14px;
+        overflow: hidden;
+        height: 100%;
+        transition: 0.25s;
     }
 
-    .btn-register {
-        background: #1900b8;
-        color: #fff;
-        border: none;
-        border-radius: 9px;
-        padding: 13px 22px;
-        font-weight: 600;
-        transition: 0.2s;
+    .item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(30, 15, 130, 0.12);
     }
 
-    .btn-register:hover {
-        background: #ff751f;
-        color: #fff;
+    .item-image {
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
+        background: #f1f0fa;
     }
 
-    .errorlist {
-        color: #dc3545;
-        font-size: 12px;
-        padding-left: 18px;
-        margin-top: 6px;
+    .item-no-image {
+        height: 210px;
+        background: #f1f0fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777b8b;
+        font-size: 14px;
     }
 
-    @media (max-width: 576px) {
-        .registration-header, .form-body {
-            padding: 23px 18px;
-        }
+    .item-title {
+        color: #303442;
+        font-size: 17px;
+        font-weight: 650;
+        margin: 0;
+    }
 
-        .registration-header h1 {
-            font-size: 23px;
-        }
+    .empty-message {
+        background: #fff;
+        border: 1px solid #ececf5;
+        border-radius: 14px;
+        padding: 45px 20px;
+        text-align: center;
+        color: #777b8b;
     }
 </style>
 {% endblock %}
 
+
 {% block content %}
-<h1>This is home</h1>
+
+<div class="mb-4">
+    <h1 class="home-heading">Lost Items</h1>
+    <p class="home-description">
+        Explore lost items reported by our campus community.
+    </p>
+</div>
+
+<div class="row g-4">
+
+    {% for item in items %}
+
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+            <div class="item-card">
+
+                {% if item.picture %}
+                    <img src="{{ item.picture.url }}"
+                         alt="{{ item.title }}"
+                         class="item-image">
+                {% else %}
+                    <div class="item-no-image">
+                        No Image Available
+                    </div>
+                {% endif %}
+
+                <div class="p-3">
+                    <h5 class="item-title">
+                        {{ item.title }}
+                    </h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="col-12">
+            <div class="empty-message">
+                <h5>No Lost Items Available</h5>
+                <p class="mb-0">
+                    There are currently no lost items reported.
+                </p>
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
 {% endblock %}

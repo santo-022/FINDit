@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from .forms import StudentRegisterForm, StaffRegisterForm, LoginForm
-
+from items.models import Item
 
 def student_register(request):
     if request.method == 'POST':
@@ -33,6 +33,10 @@ def staff_register(request):
         form = StaffRegisterForm()
 
     return render(request, 'users/staff_register.html', {'form': form})
+
+def home(request):
+    items = Item.objects.filter(itemtype='LOST').order_by('-created_at')
+    return render(request, 'home.html', {'items': items})
 
 def user_login(request):
     if request.user.is_authenticated:
