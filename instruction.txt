@@ -1,4 +1,7 @@
 ##after cloning for the first time run this command in the terminal
+## if not .venv file then run this first
+python -m venv .venv
+## then this
 .venv/Scripts/activate
 ##and then run this
 python.exe -m pip install --upgrade pip
