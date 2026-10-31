@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 from .forms import StudentRegisterForm, StaffRegisterForm, LoginForm
 from items.models import Item
@@ -51,3 +51,8 @@ def user_login(request):
         form = LoginForm()
 
     return render(request, 'users/login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('/')
