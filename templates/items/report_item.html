@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Item | FINDit{% endblock %}
+
+{% block content %}
+
+<div class="content-card mx-auto" style="max-width: 750px;">
+
+    <h2 class="page-title">
+        Report {% if item_type == 'LOST' %}Lost{% else %}Found{% endif %} Item
+    </h2>
+
+    <p class="page-subtitle">
+        Provide the details of your item below.
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.errors %}
+                    <div class="text-danger small">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-findit w-100">
+            Submit Report
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
