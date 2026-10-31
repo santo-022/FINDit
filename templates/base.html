@@ -164,6 +164,10 @@
             <div class="navbar-note">
                 Reuniting people with their belongings
             </div>
+
+            {% if not user.is_authenticated and request.path != '/student/register/' %}
+                <a href="{% url 'student_register'%}"  class="btn btn-primary">REGISTER</a>
+            {% endif %}
         </div>
     </nav>
 
