@@ -237,6 +237,7 @@ def staff_match_list(request):
 
 
 @login_required
+
 def staff_claim_list(request):
 
     if not getattr(request.user, 'is_staff_member', False):
@@ -244,7 +245,7 @@ def staff_claim_list(request):
         return redirect('home')
 
     claims = ClaimRequest.objects.filter(
-        status='PENDING'
+        status__in=['PENDING', 'APPROVED']
     ).select_related(
         'student',
         'match__lost_item',
