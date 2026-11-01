@@ -19,4 +19,10 @@ urlpatterns = [
         views.review_claim,
         name='review_claim'
     ),
+
+    path(
+        'my-matches/',
+        views.match_list,
+        name='match_list'
+    ),
 ]

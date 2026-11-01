@@ -1,9 +1,12 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
 from .models import Match, ClaimRequest, Verification, Notification
+from .forms import ClaimRequestForm
+from django.db.models import Q
+
 
 
 @login_required
@@ -34,15 +37,18 @@ def send_claim_request(request, match_id):
         messages.warning(request, 'You already have a claim request.')
         return redirect('home')
 
-    comment = request.POST.get('comment', '').strip()
+    form = ClaimRequestForm(request.POST)
 
-    ClaimRequest.objects.create(
-        match=match,
-        student=request.user,
-        comment=comment
-    )
+    if form.is_valid():
+        claim = form.save(commit=False)
+        claim.match = match
+        claim.student = request.user
+        claim.save()
 
-    messages.success(request, 'Claim request submitted successfully!')
+        messages.success(request, 'Claim request submitted successfully!')
+    else:
+        messages.error(request, 'Please provide valid claim information.')
+
     return redirect('home')
 
 
@@ -50,7 +56,7 @@ def send_claim_request(request, match_id):
 @require_POST
 def verify_match(request, match_id):
 
-    if not request.user.is_staff_member:
+    if not getattr(request.user, 'is_staff_member', False):
         messages.error(request, 'Only staff can verify matches.')
         return redirect('home')
 
@@ -65,13 +71,11 @@ def verify_match(request, match_id):
     if decision == 'APPROVE':
         match.status = 'CONFIRMED'
         match.save(update_fields=['status'])
-
         messages.success(request, 'Match approved.')
 
     elif decision == 'REJECT':
         match.status = 'REJECTED'
         match.save(update_fields=['status'])
-
         messages.success(request, 'Match rejected.')
 
     else:
@@ -84,7 +88,7 @@ def verify_match(request, match_id):
 @require_POST
 def review_claim(request, claim_id):
 
-    if not request.user.is_staff_member:
+    if not getattr(request.user, 'is_staff_member', False):
         messages.error(request, 'Only staff can review claims.')
         return redirect('home')
 
@@ -103,15 +107,17 @@ def review_claim(request, claim_id):
 
     if decision == 'APPROVE':
         claim.status = 'APPROVED'
+        verification_decision = 'APPROVED'
     else:
         claim.status = 'REJECTED'
+        verification_decision = 'REJECTED'
 
     claim.save(update_fields=['status'])
 
     Verification.objects.create(
         claim=claim,
         staff=request.user,
-        decision=decision + 'ED' if decision == 'APPROVE' else 'REJECTED',
+        decision=verification_decision,
         remarks=remarks
     )
 
@@ -123,3 +129,19 @@ def review_claim(request, claim_id):
     messages.success(request, 'Claim review completed.')
 
     return redirect('home')
+
+
+@login_required
+def match_list(request):
+
+    matches = Match.objects.filter(
+        lost_item__reported_by=request.user,
+        match_score__gt=75
+    ).select_related(
+        'lost_item',
+        'found_item'
+    ).order_by('-match_score')
+
+    return render(request, 'recovery/match_list.html', {
+        'matches': matches
+    })
