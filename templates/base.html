@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -217,6 +218,10 @@
 
                     {% elif request.user.is_staff_member %}
 
+                        <a href="{% url 'staff_dashboard' %}" class="btn btn-nav">
+                            STAFF DASHBOARD
+                        </a>
+
                         <a href="{% url 'staff_match_list' %}" class="btn btn-nav">
                             VERIFY MATCHES
                         </a>
@@ -288,4 +293,3 @@
 
 </body>
 </html>
-cdn.jsdelivr.net
