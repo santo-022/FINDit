@@ -75,7 +75,8 @@ class ItemForm(forms.ModelForm):
                 'placeholder': 'Describe the item'
             }),
             'picture': forms.ClearableFileInput(attrs={
-                'class': 'form-control'
+                'class': 'form-control',
+                'accept': 'image/*'
             }),
             'color': forms.TextInput(attrs={
                 'class': 'form-control',
