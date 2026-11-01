@@ -31,4 +31,10 @@ urlpatterns = [
         views.staff_match_list,
         name='staff_match_list'
     ),
+
+    path(
+        'staff/claims/',
+        views.staff_claim_list,
+        name='staff_claim_list'
+    ),
 ]

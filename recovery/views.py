@@ -166,3 +166,22 @@ def staff_match_list(request):
     return render(request, 'recovery/staff_match_list.html', {
         'matches': matches
     })
+
+@login_required
+def staff_claim_list(request):
+
+    if not getattr(request.user, 'is_staff_member', False):
+        messages.error(request, 'Only staff can access this page.')
+        return redirect('home')
+
+    claims = ClaimRequest.objects.filter(
+        status='PENDING'
+    ).select_related(
+        'student',
+        'match__lost_item',
+        'match__found_item'
+    ).order_by('-created_at')
+
+    return render(request, 'recovery/staff_claim_list.html', {
+        'claims': claims
+    })
