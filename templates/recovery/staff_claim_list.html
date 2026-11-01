@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Staff Claim Review | FINDit{% endblock %}
@@ -16,7 +15,21 @@
 
         <div class="content-card mb-4">
 
-            <h5>Claim Request #{{ claim.id }}</h5>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h5>Claim Request #{{ claim.id }}</h5>
+
+                {% if claim.status == 'PENDING' %}
+                    <span class="badge bg-warning text-dark">Pending Review</span>
+                {% elif claim.status == 'APPROVED' %}
+                    {% if claim.match.lost_item.status == 'RESOLVED' or claim.match.found_item.status == 'RESOLVED' %}
+                        <span class="badge bg-success">Handover Completed</span>
+                    {% else %}
+                        <span class="badge bg-primary">Approved - Waiting for Handover</span>
+                    {% endif %}
+                {% elif claim.status == 'REJECTED' %}
+                    <span class="badge bg-danger">Rejected</span>
+                {% endif %}
+            </div>
 
             <p>
                 <strong>Student:</strong> {{ claim.student }}
@@ -43,6 +56,7 @@
                     <p><strong>Color:</strong> {{ claim.match.lost_item.color }}</p>
                     <p><strong>Brand:</strong> {{ claim.match.lost_item.brand }}</p>
                     <p><strong>Location:</strong> {{ claim.match.lost_item.location }}</p>
+                    <p><strong>Status:</strong> {{ claim.match.lost_item.get_status_display }}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -58,6 +72,7 @@
                     <p><strong>Color:</strong> {{ claim.match.found_item.color }}</p>
                     <p><strong>Brand:</strong> {{ claim.match.found_item.brand }}</p>
                     <p><strong>Location:</strong> {{ claim.match.found_item.location }}</p>
+                    <p><strong>Status:</strong> {{ claim.match.found_item.get_status_display }}</p>
                 </div>
 
             </div>
@@ -75,38 +90,72 @@
                 <span class="text-primary">{{ claim.match.match_score }}%</span>
             </p>
 
-            <div class="d-flex gap-2">
+            {% if claim.status == 'PENDING' %}
 
-                <form method="post"
-                      action="{% url 'review_claim' claim.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="decision" value="APPROVE">
+                <div class="d-flex gap-2 flex-wrap">
 
-                    <button type="submit" class="btn btn-success">
-                        Approve Claim
-                    </button>
-                </form>
+                    <form method="post"
+                          action="{% url 'review_claim' claim.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="decision" value="APPROVE">
 
-                <form method="post"
-                      action="{% url 'review_claim' claim.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="decision" value="REJECT">
+                        <button type="submit" class="btn btn-success">
+                            Approve Claim
+                        </button>
+                    </form>
 
-                    <button type="submit" class="btn btn-danger">
-                        Reject Claim
-                    </button>
-                </form>
+                    <form method="post"
+                          action="{% url 'review_claim' claim.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="decision" value="REJECT">
 
-            </div>
+                        <button type="submit" class="btn btn-danger">
+                            Reject Claim
+                        </button>
+                    </form>
+
+                </div>
+
+            {% elif claim.status == 'APPROVED' %}
+
+                {% if claim.match.lost_item.status != 'RESOLVED' and claim.match.found_item.status != 'RESOLVED' %}
+
+                    <form method="post"
+                          action="{% url 'confirm_handover' claim.id %}"
+                          onsubmit="return confirm('Have you completed the actual item handover?');">
+
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-primary">
+                            Confirm Handover
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <p class="text-success fw-bold mb-0">
+                        Handover completed. Both items are resolved.
+                    </p>
+
+                {% endif %}
+
+            {% elif claim.status == 'REJECTED' %}
+
+                <p class="text-danger fw-bold mb-0">
+                    This claim request was rejected.
+                </p>
+
+            {% endif %}
 
         </div>
 
     {% empty %}
 
         <div class="content-card text-center">
-            <h5>No Pending Claim Requests</h5>
+            <h5>No Claim Requests</h5>
             <p class="text-muted">
-                There are no claim requests waiting for review.
+                There are no pending or approved claim requests.
             </p>
         </div>
 
