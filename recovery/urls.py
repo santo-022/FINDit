@@ -4,18 +4,12 @@ from . import views
 
 urlpatterns = [
     path('dashboard/', views.staff_dashboard, name='staff_dashboard'),
-
     path('claim/<int:match_id>/', views.send_claim_request, name='send_claim_request'),
-
     path('verify-match/<int:match_id>/', views.verify_match, name='verify_match'),
-
     path('review-claim/<int:claim_id>/', views.review_claim, name='review_claim'),
-
+    path('confirm-handover/<int:claim_id>/', views.confirm_handover, name='confirm_handover'),
     path('my-matches/', views.match_list, name='match_list'),
-
     path('staff/matches/', views.staff_match_list, name='staff_match_list'),
-
     path('staff/claims/', views.staff_claim_list, name='staff_claim_list'),
-
     path('notifications/', views.notification_list, name='notification_list'),
 ]
