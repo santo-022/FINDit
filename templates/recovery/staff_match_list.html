@@ -1,29 +1,31 @@
 {% extends 'base.html' %}
 
-{% block title %}My Matches | FINDit{% endblock %}
+{% block title %}Staff Match Verification | FINDit{% endblock %}
 
 {% block content %}
 
 <div class="container py-4">
 
-    <h2 class="page-title">My Possible Matches</h2>
+    <h2 class="page-title">Match Verification</h2>
     <p class="page-subtitle">
-        Found items that may match your lost item.
+        Review and verify possible item matches.
     </p>
 
     {% for match in matches %}
 
         <div class="content-card mb-4">
 
+            <h5>Match #{{ match.id }}</h5>
+
             <div class="row">
 
                 <div class="col-md-6 mb-3">
-                    <h5>Your Lost Item</h5>
+                    <h5>Lost Item</h5>
 
                     {% if match.lost_item.picture %}
                         <img src="{{ match.lost_item.picture.url }}"
                              class="img-fluid rounded mb-2"
-                             style="max-height: 180px;">
+                             style="max-height: 160px;">
                     {% endif %}
 
                     <p><strong>Title:</strong> {{ match.lost_item.title }}</p>
@@ -31,15 +33,16 @@
                     <p><strong>Color:</strong> {{ match.lost_item.color }}</p>
                     <p><strong>Brand:</strong> {{ match.lost_item.brand }}</p>
                     <p><strong>Location:</strong> {{ match.lost_item.location }}</p>
+                    <p><strong>Reported by:</strong> {{ match.lost_item.reported_by }}</p>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <h5>Possible Found Item</h5>
+                    <h5>Found Item</h5>
 
                     {% if match.found_item.picture %}
                         <img src="{{ match.found_item.picture.url }}"
                              class="img-fluid rounded mb-2"
-                             style="max-height: 180px;">
+                             style="max-height: 160px;">
                     {% endif %}
 
                     <p><strong>Title:</strong> {{ match.found_item.title }}</p>
@@ -47,6 +50,7 @@
                     <p><strong>Color:</strong> {{ match.found_item.color }}</p>
                     <p><strong>Brand:</strong> {{ match.found_item.brand }}</p>
                     <p><strong>Location:</strong> {{ match.found_item.location }}</p>
+                    <p><strong>Reported by:</strong> {{ match.found_item.reported_by }}</p>
                 </div>
 
             </div>
@@ -58,64 +62,42 @@
                 <span class="text-primary">{{ match.match_score }}%</span>
             </h5>
 
-            <p>
-                <strong>Match Status:</strong>
-
-                {% if match.status == 'CONFIRMED' %}
-                    <span class="text-success">Verified by Staff</span>
-
-                {% elif match.status == 'REJECTED' %}
-                    <span class="text-danger">Rejected by Staff</span>
-
-                {% else %}
-                    <span class="text-warning">Pending Verification</span>
-                {% endif %}
+            <p class="text-warning">
+                Pending Staff Verification
             </p>
 
-            {% if match.status != 'REJECTED' %}
+            <div class="d-flex gap-2">
 
-                {% if match.match_score >= 90 or match.status == 'CONFIRMED' %}
+                <form method="post"
+                      action="{% url 'verify_match' match.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="decision" value="APPROVE">
 
-                    <form method="post"
-                          action="{% url 'send_claim_request' match.id %}">
+                    <button type="submit" class="btn btn-success">
+                        Approve Match
+                    </button>
+                </form>
 
-                        {% csrf_token %}
+                <form method="post"
+                      action="{% url 'verify_match' match.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="decision" value="REJECT">
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Why do you think this is your item?
-                            </label>
+                    <button type="submit" class="btn btn-danger">
+                        Reject Match
+                    </button>
+                </form>
 
-                            <textarea name="comment"
-                                      class="form-control"
-                                      rows="3"
-                                      placeholder="Explain why this item belongs to you..."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-findit">
-                            Submit Claim Request
-                        </button>
-
-                    </form>
-
-                {% else %}
-
-                    <p class="text-muted">
-                        Staff verification is required before you can claim this item.
-                    </p>
-
-                {% endif %}
-
-            {% endif %}
+            </div>
 
         </div>
 
     {% empty %}
 
         <div class="content-card text-center">
-            <h5>No Matches Found</h5>
+            <h5>No Pending Matches</h5>
             <p class="text-muted">
-                We couldn't find any possible matches for your lost items yet.
+                There are no matches waiting for verification.
             </p>
         </div>
 
