@@ -185,3 +185,17 @@ def staff_claim_list(request):
     return render(request, 'recovery/staff_claim_list.html', {
         'claims': claims
     })
+
+@login_required
+def notification_list(request):
+
+    notifications = Notification.objects.filter(
+        recipient=request.user
+    ).order_by('-created_at')
+
+    # Mark notifications as read
+    notifications.filter(is_read=False).update(is_read=True)
+
+    return render(request, 'recovery/notification_list.html', {
+        'notifications': notifications
+    })

@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-
 urlpatterns = [
     path(
         'claim/<int:match_id>/',
@@ -37,4 +36,11 @@ urlpatterns = [
         views.staff_claim_list,
         name='staff_claim_list'
     ),
+    path(
+        'notifications/',
+        views.notification_list,
+        name='notification_list'
+    ),
 ]
+
+

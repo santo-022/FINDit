@@ -1,0 +1,117 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Staff Claim Review | FINDit{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 class="page-title">Claim Requests</h2>
+    <p class="page-subtitle">
+        Review student claim requests and verify ownership.
+    </p>
+
+    {% for claim in claims %}
+
+        <div class="content-card mb-4">
+
+            <h5>Claim Request #{{ claim.id }}</h5>
+
+            <p>
+                <strong>Student:</strong> {{ claim.student }}
+            </p>
+
+            <p>
+                <strong>Submitted:</strong> {{ claim.created_at }}
+            </p>
+
+            <hr>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <h6>Lost Item</h6>
+
+                    {% if claim.match.lost_item.picture %}
+                        <img src="{{ claim.match.lost_item.picture.url }}"
+                             class="img-fluid rounded mb-2"
+                             style="max-height: 150px;">
+                    {% endif %}
+
+                    <p><strong>Title:</strong> {{ claim.match.lost_item.title }}</p>
+                    <p><strong>Color:</strong> {{ claim.match.lost_item.color }}</p>
+                    <p><strong>Brand:</strong> {{ claim.match.lost_item.brand }}</p>
+                    <p><strong>Location:</strong> {{ claim.match.lost_item.location }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <h6>Found Item</h6>
+
+                    {% if claim.match.found_item.picture %}
+                        <img src="{{ claim.match.found_item.picture.url }}"
+                             class="img-fluid rounded mb-2"
+                             style="max-height: 150px;">
+                    {% endif %}
+
+                    <p><strong>Title:</strong> {{ claim.match.found_item.title }}</p>
+                    <p><strong>Color:</strong> {{ claim.match.found_item.color }}</p>
+                    <p><strong>Brand:</strong> {{ claim.match.found_item.brand }}</p>
+                    <p><strong>Location:</strong> {{ claim.match.found_item.location }}</p>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h6>Student's Explanation</h6>
+
+            <p>
+                {{ claim.comment|default:"No explanation provided." }}
+            </p>
+
+            <p>
+                <strong>Match Score:</strong>
+                <span class="text-primary">{{ claim.match.match_score }}%</span>
+            </p>
+
+            <div class="d-flex gap-2">
+
+                <form method="post"
+                      action="{% url 'review_claim' claim.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="decision" value="APPROVE">
+
+                    <button type="submit" class="btn btn-success">
+                        Approve Claim
+                    </button>
+                </form>
+
+                <form method="post"
+                      action="{% url 'review_claim' claim.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="decision" value="REJECT">
+
+                    <button type="submit" class="btn btn-danger">
+                        Reject Claim
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="content-card text-center">
+            <h5>No Pending Claim Requests</h5>
+            <p class="text-muted">
+                There are no claim requests waiting for review.
+            </p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
