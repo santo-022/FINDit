@@ -1,3 +1,4 @@
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,8 +6,29 @@ from django.views.decorators.http import require_POST
 
 from .models import Match, ClaimRequest, Verification, Notification
 from .forms import ClaimRequestForm
-from django.db.models import Q
 
+
+@login_required
+def staff_dashboard(request):
+
+    if not getattr(request.user, 'is_staff_member', False):
+        messages.error(request, 'Only staff can access this page.')
+        return redirect('home')
+
+    pending_matches = Match.objects.filter(
+        match_score__gt=75,
+        match_score__lt=90,
+        status='PENDING'
+    ).count()
+
+    pending_claims = ClaimRequest.objects.filter(
+        status='PENDING'
+    ).count()
+
+    return render(request, 'recovery/staff_dashboard.html', {
+        'pending_matches': pending_matches,
+        'pending_claims': pending_claims,
+    })
 
 
 @login_required
@@ -167,6 +189,7 @@ def staff_match_list(request):
         'matches': matches
     })
 
+
 @login_required
 def staff_claim_list(request):
 
@@ -186,6 +209,7 @@ def staff_claim_list(request):
         'claims': claims
     })
 
+
 @login_required
 def notification_list(request):
 
@@ -193,7 +217,6 @@ def notification_list(request):
         recipient=request.user
     ).order_by('-created_at')
 
-    # Mark notifications as read
     notifications.filter(is_read=False).update(is_read=True)
 
     return render(request, 'recovery/notification_list.html', {
