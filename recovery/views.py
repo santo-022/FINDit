@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.db import transaction
 
 from .models import Match, ClaimRequest, Verification, Notification
 from .forms import ClaimRequestForm
@@ -149,6 +150,51 @@ def review_claim(request, claim_id):
     )
 
     messages.success(request, 'Claim review completed.')
+
+    return redirect('home')
+
+
+@login_required
+@require_POST
+def confirm_handover(request, claim_id):
+
+    if not getattr(request.user, 'is_staff_member', False):
+        messages.error(request, 'Only staff can confirm handover.')
+        return redirect('home')
+
+    claim = get_object_or_404(
+        ClaimRequest.objects.select_related(
+            'match__lost_item',
+            'match__found_item'
+        ),
+        id=claim_id
+    )
+
+    if claim.status != 'APPROVED':
+        messages.error(request, 'Only approved claims can be handed over.')
+        return redirect('home')
+
+    lost_item = claim.match.lost_item
+    found_item = claim.match.found_item
+
+    if lost_item.status == 'RESOLVED' or found_item.status == 'RESOLVED':
+        messages.warning(request, 'This item has already been resolved.')
+        return redirect('home')
+
+    with transaction.atomic():
+
+        lost_item.status = 'RESOLVED'
+        found_item.status = 'RESOLVED'
+
+        lost_item.save(update_fields=['status'])
+        found_item.save(update_fields=['status'])
+
+        Notification.objects.create(
+            recipient=claim.student,
+            message='Your item handover has been completed successfully!'
+        )
+
+    messages.success(request, 'Handover confirmed. Both items are now resolved.')
 
     return redirect('home')
 
