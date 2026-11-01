@@ -25,4 +25,10 @@ urlpatterns = [
         views.match_list,
         name='match_list'
     ),
+
+    path(
+        'staff/matches/',
+        views.staff_match_list,
+        name='staff_match_list'
+    ),
 ]

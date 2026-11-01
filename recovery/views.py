@@ -145,3 +145,24 @@ def match_list(request):
     return render(request, 'recovery/match_list.html', {
         'matches': matches
     })
+
+
+@login_required
+def staff_match_list(request):
+
+    if not getattr(request.user, 'is_staff_member', False):
+        messages.error(request, 'Only staff can access this page.')
+        return redirect('home')
+
+    matches = Match.objects.filter(
+        match_score__gt=75,
+        match_score__lt=90,
+        status='PENDING'
+    ).select_related(
+        'lost_item',
+        'found_item'
+    ).order_by('-match_score')
+
+    return render(request, 'recovery/staff_match_list.html', {
+        'matches': matches
+    })
