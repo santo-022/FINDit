@@ -72,41 +72,71 @@
                 {% endif %}
             </p>
 
-            {% if match.status != 'REJECTED' %}
+            {% with claim=match.latest_claim %}
 
-                {% if match.match_score >= 90 or match.status == 'CONFIRMED' %}
+                {% if claim and claim.status == 'PENDING' %}
 
-                    <form method="post"
-                          action="{% url 'send_claim_request' match.id %}">
+                    <span class="badge bg-warning text-dark">
+                        Claim Request Pending
+                    </span>
 
-                        {% csrf_token %}
+                    <p class="text-muted mt-2">
+                        Your claim request is waiting for staff review.
+                    </p>
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Why do you think this is your item?
-                            </label>
+                {% elif claim and claim.status == 'APPROVED' %}
 
-                            <textarea name="comment"
-                                      class="form-control"
-                                      rows="3"
-                                      placeholder="Explain why this item belongs to you..."></textarea>
-                        </div>
+                    <span class="badge bg-success">
+                        Claim Approved
+                    </span>
 
-                        <button type="submit" class="btn btn-findit">
-                            Submit Claim Request
-                        </button>
+                    <p class="text-success mt-2">
+                        Staff has approved your claim request.
+                    </p>
 
-                    </form>
+                {% elif match.status == 'REJECTED' %}
+
+                    <p class="text-danger">
+                        This match was rejected by staff.
+                    </p>
 
                 {% else %}
 
-                    <p class="text-muted">
-                        Staff verification is required before you can claim this item.
-                    </p>
+                    {% if match.match_score >= 90 or match.status == 'CONFIRMED' %}
+
+                        <form method="post"
+                              action="{% url 'send_claim_request' match.id %}">
+
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Why do you think this is your item?
+                                </label>
+
+                                <textarea name="comment"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Explain why this item belongs to you..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-findit">
+                                Submit Claim Request
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <p class="text-muted">
+                            Staff verification is required before you can claim this item.
+                        </p>
+
+                    {% endif %}
 
                 {% endif %}
 
-            {% endif %}
+            {% endwith %}
 
         </div>
 

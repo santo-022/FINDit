@@ -216,6 +216,12 @@ def match_list(request):
         'claims'
     ).order_by('-match_score')
 
+    for match in matches:
+        match.latest_claim = ClaimRequest.objects.filter(
+            match=match,
+            student=request.user
+        ).order_by('-created_at').first()
+
     return render(request, 'recovery/match_list.html', {
         'matches': matches
     })
