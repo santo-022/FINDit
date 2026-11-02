@@ -238,11 +238,17 @@
 
                 {% else %}
 
-                    {% if request.path != '/student/register/' %}
-                        <a href="{% url 'student_register' %}" class="btn btn-nav">
-                            REGISTER
-                        </a>
-                    {% endif %}
+                {% if request.path != '/student/register/' and request.path != '/staff/register/' %}
+
+                    <a href="{% url 'student_register' %}" class="btn btn-nav">
+                        REGISTER AS STUDENT
+                    </a>
+
+                    <a href="{% url 'staff_register' %}" class="btn btn-nav">
+                        REGISTER AS STAFF
+                    </a>
+
+                {% endif %}
 
                     {% if request.path != '/login/' %}
                         <a href="{% url 'login' %}" class="btn btn-nav">
