@@ -212,6 +212,8 @@ def match_list(request):
     ).select_related(
         'lost_item',
         'found_item'
+    ).prefetch_related(
+        'claims'
     ).order_by('-match_score')
 
     return render(request, 'recovery/match_list.html', {
