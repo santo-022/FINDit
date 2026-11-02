@@ -168,8 +168,8 @@ def confirm_handover(request, claim_id):
 
     claim = get_object_or_404(
         ClaimRequest.objects.select_related(
-            'match__lost_item',
-            'match__found_item'
+            'match__lost_item__reported_by__student',
+            'match__found_item__reported_by__student'
         ),
         id=claim_id
     )
@@ -185,6 +185,9 @@ def confirm_handover(request, claim_id):
         messages.warning(request, 'This item has already been resolved.')
         return redirect('home')
 
+    lost_student = lost_item.reported_by
+    found_student = found_item.reported_by
+
     with transaction.atomic():
 
         lost_item.status = 'RESOLVED'
@@ -193,15 +196,71 @@ def confirm_handover(request, claim_id):
         lost_item.save(update_fields=['status'])
         found_item.save(update_fields=['status'])
 
-        Notification.objects.create(
-            recipient=claim.student,
-            message='Your item handover has been completed successfully!'
-        )
+        # Notification for Lost Item Reporter
+        if lost_student:
+
+            found_profile = found_student.profile if found_student else None
+
+            found_department = (
+                found_profile.department
+                if found_profile and hasattr(found_profile, 'department')
+                else 'N/A'
+            )
+
+            found_batch = (
+                found_profile.batch
+                if found_profile and hasattr(found_profile, 'batch')
+                else 'N/A'
+            )
+
+            Notification.objects.create(
+                recipient=lost_student,
+                message=(
+                    f"Handover Completed!\n"
+                    f"Your lost item '{lost_item.title}' has been handed over successfully.\n\n"
+                    f"Found Item: {found_item.title}\n"
+                    f"Reported By: {found_student.get_full_name() or found_student.username if found_student else 'N/A'}\n"
+                    f"Phone: {found_student.phone_number if found_student else 'N/A'}\n"
+                    f"Email: {found_student.email if found_student else 'N/A'}\n"
+                    f"Department: {found_department}\n"
+                    f"Batch: {found_batch}"
+                )
+            )
+
+        # Notification for Found Item Reporter
+        if found_student:
+
+            lost_profile = lost_student.profile if lost_student else None
+
+            lost_department = (
+                lost_profile.department
+                if lost_profile and hasattr(lost_profile, 'department')
+                else 'N/A'
+            )
+
+            lost_batch = (
+                lost_profile.batch
+                if lost_profile and hasattr(lost_profile, 'batch')
+                else 'N/A'
+            )
+
+            Notification.objects.create(
+                recipient=found_student,
+                message=(
+                    f"Handover Completed!\n"
+                    f"Your found item '{found_item.title}' has been handed over successfully.\n\n"
+                    f"Lost Item: {lost_item.title}\n"
+                    f"Reported By: {lost_student.get_full_name() or lost_student.username if lost_student else 'N/A'}\n"
+                    f"Phone: {lost_student.phone_number if lost_student else 'N/A'}\n"
+                    f"Email: {lost_student.email if lost_student else 'N/A'}\n"
+                    f"Department: {lost_department}\n"
+                    f"Batch: {lost_batch}"
+                )
+            )
 
     messages.success(request, 'Handover confirmed. Both items are now resolved.')
 
     return redirect('home')
-
 
 @login_required
 def match_list(request):
