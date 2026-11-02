@@ -1,0 +1,156 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Staff Dashboard | FINDit{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="mb-4">
+        <h2 class="page-title">Staff Dashboard</h2>
+        <p class="page-subtitle">
+            View all reported lost and found items from students.
+        </p>
+    </div>
+
+    <!-- ALL LOST ITEMS -->
+    <div class="content-card mb-4">
+
+        <h4 class="page-title mb-3">All Reported Lost Items</h4>
+
+        {% if lost_items %}
+
+            {% for item in lost_items %}
+
+                <div class="border rounded-3 p-3 mb-3">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-md-8">
+
+                            <h5>{{ item.title }}</h5>
+
+                            <p class="mb-1">
+                                <strong>Reported By:</strong> {{ item.reported_by }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Category:</strong> {{ item.catagory }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Color:</strong> {{ item.color }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Brand:</strong> {{ item.brand }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Location:</strong> {{ item.location }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Status:</strong> {{ item.get_status_display }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Reported Date:</strong> {{ item.created_at }}
+                            </p>
+
+                            {% if item.picture %}
+                                <img src="{{ item.picture.url }}"
+                                     alt="{{ item.title }}"
+                                     style="width:120px; height:100px; object-fit:cover;"
+                                     class="rounded mt-2">
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="text-muted">No lost items have been reported yet.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ALL FOUND ITEMS -->
+    <div class="content-card">
+
+        <h4 class="page-title mb-3">All Reported Found Items</h4>
+
+        {% if found_items %}
+
+            {% for item in found_items %}
+
+                <div class="border rounded-3 p-3 mb-3">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-md-8">
+
+                            <h5>{{ item.title }}</h5>
+
+                            <p class="mb-1">
+                                <strong>Reported By:</strong> {{ item.reported_by }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Category:</strong> {{ item.catagory }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Color:</strong> {{ item.color }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Brand:</strong> {{ item.brand }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Location:</strong> {{ item.location }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Status:</strong> {{ item.get_status_display }}
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Reported Date:</strong> {{ item.created_at }}
+                            </p>
+
+                            {% if item.picture %}
+                                <img src="{{ item.picture.url }}"
+                                     alt="{{ item.title }}"
+                                     style="width:120px; height:100px; object-fit:cover;"
+                                     class="rounded mt-2">
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="text-muted">No found items have been reported yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

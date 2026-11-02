@@ -7,28 +7,32 @@ from django.db import transaction
 
 from .models import Match, ClaimRequest, Verification, Notification
 from .forms import ClaimRequestForm
+from .models import Item
 
 
 @login_required
+
 def staff_dashboard(request):
 
     if not getattr(request.user, 'is_staff_member', False):
         messages.error(request, 'Only staff can access this page.')
         return redirect('home')
 
-    pending_matches = Match.objects.filter(
-        match_score__gt=75,
-        match_score__lt=90,
-        status='PENDING'
-    ).count()
+    lost_items = Item.objects.filter(
+        itemtype='LOST'
+    ).select_related(
+        'catagory', 'reported_by'
+    ).order_by('-created_at')
 
-    pending_claims = ClaimRequest.objects.filter(
-        status='PENDING'
-    ).count()
+    found_items = Item.objects.filter(
+        itemtype='FOUND'
+    ).select_related(
+        'catagory', 'reported_by'
+    ).order_by('-created_at')
 
-    return render(request, 'recovery/staff_dashboard.html', {
-        'pending_matches': pending_matches,
-        'pending_claims': pending_claims,
+    return render(request, 'items/staff_dashboard.html', {
+        'lost_items': lost_items,
+        'found_items': found_items,
     })
 
 
