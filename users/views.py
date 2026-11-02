@@ -35,7 +35,11 @@ def staff_register(request):
     return render(request, 'users/staff_register.html', {'form': form})
 
 def home(request):
-    items = Item.objects.filter(itemtype='LOST').order_by('-created_at')
+    items = Item.objects.filter(
+        itemtype='LOST',
+        status='ACTIVE'
+    ).order_by('-created_at')   #shudhu lost item gulo show korbe and resolve hoye jawar por show korbe nah
+
     return render(request, 'home.html', {'items': items})
 
 def user_login(request):
